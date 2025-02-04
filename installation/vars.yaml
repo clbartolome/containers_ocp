@@ -1,0 +1,34 @@
+---
+# Required namespaces (operators namespaces must NOT be also included here)
+namespaces:
+  - name: deleteme
+
+bitwarden:
+  token: "{{ bw_token }}"
+  namespaces:
+    - deleteme
+
+gitea:
+  namespace: gitea
+  ocp_domain: "{{ ocp_host }}"
+  repositories: 
+    - name: demo-app
+      url: https://github.com/clbartolome/containers_ocp.git
+      branch: master
+      path: "/demo-app"
+  users:
+    - id: admin
+      pass: admin
+      admin: true
+      colaborator_in:
+        - demo-app
+
+argo:
+  ocp_domain: "{{ ocp_host }}"
+  target_namespaces: # Namespaces where ArgoCD will create resources
+    - name: deleteme
+  environment_repo_url: https://github.com/clbartolome/containers_ocp.git
+  environment_repo_revision: master
+  environment_path: installation/environment/* # Will create an app for each directory in this path
+  
+  
