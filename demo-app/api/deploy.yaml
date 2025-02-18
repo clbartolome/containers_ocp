@@ -1,33 +1,34 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: image-test-deployment
+  name: api
+  labels:
+    app: api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: image-test
+      app: api
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        app: image-test
+        app: api
+        deployment: api
     spec:
       containers:
-        - name: image-test
-          image: 'openshift/hello-openshift'
+        - name: api
+          image: 'quay.io/calopezb/demo-app:1.0'
           ports:
-            - containerPort: 8080
+            - containerPort: 5000
               protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: api-config
           resources: {}
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
           imagePullPolicy: Always
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
-      serviceAccountName: test
-      serviceAccount: test
       securityContext: {}
       schedulerName: default-scheduler
   strategy:
