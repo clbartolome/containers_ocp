@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: demo-app
+  namespace: openshift-gitops
+spec:
+  generators:
+    - list:
+        elements:
+        - app: "api"
+          namespace: "public-layer"
+        - app: "backend"
+          namespace: "app-layer"
+        - app: "database"
+          namespace: "data-layer"
+  template:
+    metadata:
+      name: '{{ app }}'
+    spec:
+      project: default
+      source:
+        repoURL: http://gitea.gitea.svc.cluster.local:3000/gitea/demo-app
+        targetRevision: 'master'
+        path: '{{ app }}'
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: '{{ namespace }}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true

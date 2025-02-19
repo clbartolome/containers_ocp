@@ -1,68 +1,13 @@
-# FROM node:latest
-
-# WORKDIR /app
-
-# RUN npm install -g nodemon
-# RUN apt-get update
-# RUN apt-get install -y curl
-
-# ADD . /app
-
-# EXPOSE 8080 9090 10000
-
-# CMD ["node", "server.js"]
-
-# ------
-# FROM registry.access.redhat.com/ubi9/ubi-minimal:9.3
-
-# WORKDIR /app
-
-# COPY . .
-
-# RUN microdnf install -y nodejs npm shadow-utils procps && \
-#     microdnf clean all && \
-#     npm install && \
-#     rm -rf /var/cache /tmp/*
-
-# ENV NODE_ENV=production PORT=3000
-
-# LABEL maintainer="Cool Developer <coold@somewhere.com>"
-# LABEL version="1.0"
-# LABEL description="Node example application"
-
-# EXPOSE 3000
-
-# ENTRYPOINT ["node"]
-
-# CMD ["server.js"]
-
-# --------
-FROM registry.access.redhat.com/ubi9/ubi-minimal:9.3
+FROM node:latest
 
 WORKDIR /app
 
-USER root
+ADD . /app
 
-COPY . .
+RUN npm install -g nodemon
+RUN apt-get update
+RUN apt-get install -y curl
 
-RUN microdnf install -y nodejs npm shadow-utils procps && \
-    microdnf clean all && \
-    groupadd -r appuser && \
-    useradd -r -m -g appuser appuser && \
-    chown -R appuser:appuser /app && \
-    npm install && \
-    rm -rf /var/cache /tmp/*
+EXPOSE 8080 9090 10000
 
-USER appuser
-
-ENV NODE_ENV=production PORT=3000
-
-LABEL maintainer="Cool Developer <cooldev@somewhere.com>"
-LABEL version="1.0"
-LABEL description="Node example application"
-
-EXPOSE 3000
-
-ENTRYPOINT ["node"]
-
-CMD ["server.js"]
+CMD ["node", "server.js"]

@@ -27,30 +27,18 @@
         name: demos.utils.bitwarden
       vars:
         bitwarden_operation: install
-    
-    - name: Wait for Bitwarden SM Operator pods to be in Ready state
-      kubernetes.core.k8s:
-        state: present
-        definition:
-          apiVersion: k8s.bitwarden.com/v1
-          kind: BitwardenSecret
-          metadata:
-            labels:
-              app.kubernetes.io/name: bitwardensecret
-              app.kubernetes.io/instance: bitwardensecret
-              app.kubernetes.io/part-of: sm-operator
-              app.kubernetes.io/managed-by: kustomize
-              app.kubernetes.io/created-by: sm-operator
-            name: bitwardensecret
-            namespace: deleteme
-          spec:
-            organizationId: "cd864c42-0667-4521-afb0-aae600ef844c"
-            secretName: bw-secret
-            map:
-              - bwSecretId: 2b4cf82d-7bb4-4f90-a391-b275008566eb
-                secretKeyName: message
-            authToken:
-              secretName: bw-auth-token
-              secretKey: token
+
+    - name: Configure Gitea
+      ansible.builtin.include_role:
+        name: demos.utils.gitea
+
+    - name: Configure ArgoCD
+      ansible.builtin.include_role:
+        name: demos.utils.argocd
+
+    - name: Create demo applications
+      ansible.builtin.command:
+        cmd: oc apply -f app-set.yaml
+
   vars_files:
     - vars.yaml

@@ -5,6 +5,10 @@
 
   tasks:
 
+    - name: Delete demo applications
+      ansible.builtin.command:
+        cmd: oc delete -f app-set.yaml
+
     - name: Remove Bitwarden
       ansible.builtin.include_role:
         name: demos.utils.bitwarden
@@ -22,6 +26,10 @@
       loop: "{{ namespaces }}"
       loop_control:
         loop_var: namespace
+
+    - name: Delete gitea namespace
+      ansible.builtin.command:
+        cmd: oc delete project gitea    
 
   vars_files:
     - vars.yaml

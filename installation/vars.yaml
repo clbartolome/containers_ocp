@@ -1,12 +1,17 @@
 ---
 # Required namespaces (operators namespaces must NOT be also included here)
 namespaces:
-  - name: deleteme
+  - name: demo-sa
+  - name: demo-node
+  - name: public-layer
+  - name: data-layer
+  - name: app-layer
 
 bitwarden:
   token: "{{ bw_token }}"
   namespaces:
-    - deleteme
+    - data-layer
+    - app-layer
 
 gitea:
   namespace: gitea
@@ -16,17 +21,14 @@ gitea:
       url: https://github.com/clbartolome/containers_ocp.git
       branch: master
       path: "/demo-app"
-  users:
-    - id: admin
-      pass: admin
-      admin: true
-      colaborator_in:
-        - demo-app
+  users: []
 
 argo:
   ocp_domain: "{{ ocp_host }}"
   target_namespaces: # Namespaces where ArgoCD will create resources
-    - name: deleteme
+    - name: public-layer
+    - name: data-layer
+    - name: app-layer
   environment_repo_url: https://github.com/clbartolome/containers_ocp.git
   environment_repo_revision: master
   environment_path: installation/environment/* # Will create an app for each directory in this path
